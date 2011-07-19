@@ -1282,7 +1282,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
 
                     return;
                 }
-                case 21147:                                 // Arcane Vacuum (Azuregos) 
+                case 21147:                                 // Arcane Vacuum (Azuregos)
                 case 58694:                                 // Arcane Vacuum (Cyanigosa)
                 {
                     if (!unitTarget)
@@ -2598,19 +2598,19 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     }
                     return;
                 }
-                case 54092:                                 // Monster Slayer's Kit 
-                { 
-                    uint32 spell_id = 0; 
-                    switch(urand(0,3)) 
-                    { 
-                        case 0: spell_id = 51853; break; 
-                        case 1: spell_id = 54063; break; 
-                        case 2: spell_id = 54071; break; 
-                        case 3: spell_id = 54086; break; 
-                        default: return;                        
-                    } 
-                    m_caster->CastSpell(unitTarget,spell_id,true,NULL); 
-                    return; 
+                case 54092:                                 // Monster Slayer's Kit
+                {
+                    uint32 spell_id = 0;
+                    switch(urand(0,3))
+                    {
+                        case 0: spell_id = 51853; break;
+                        case 1: spell_id = 54063; break;
+                        case 2: spell_id = 54071; break;
+                        case 3: spell_id = 54086; break;
+                        default: return;
+                    }
+                    m_caster->CastSpell(unitTarget,spell_id,true,NULL);
+                    return;
                 }
                 case 54850:                                 // Emerge (Gundrak: Colossus)
                 {
@@ -2654,10 +2654,10 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     ClearCastItem();
                     break;
                 }
-                case 57930:                                 // Arcane Lightning 
-                { 
-                    m_caster->CastSpell(m_caster, 57912, true); 
-                    return; 
+                case 57930:                                 // Arcane Lightning
+                {
+                    m_caster->CastSpell(m_caster, 57912, true);
+                    return;
                 }
                 case 58418:                                 // Portal to Orgrimmar
                 case 58420:                                 // Portal to Stormwind
@@ -2700,10 +2700,10 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(m_caster,spell_id,true,NULL);
                     return;
                 }
-                case 60038:                                 // Arcane Lightning 
-                { 
-                    m_caster->CastSpell(m_caster, 58152, true); 
-                    return; 
+                case 60038:                                 // Arcane Lightning
+                {
+                    m_caster->CastSpell(m_caster, 58152, true);
+                    return;
                 }
                 case 60932:                                 // Disengage (one from creature versions)
                 {
@@ -3288,6 +3288,8 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     if (!item)
                         return;
 
+                    m_caster->AddComboPoints(unitTarget, 1);
+
                     // all poison enchantments is temporary
                     uint32 enchant_id = item->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT);
                     if (!enchant_id)
@@ -3694,7 +3696,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                 totem->CastSpell(totem, triggered_spell_id, true, NULL, NULL, m_caster->GetObjectGuid());
 
                 // Fire Nova Visual
-                totem->CastSpell(totem, 19823, true, NULL, NULL, m_caster->GetObjectGuid());
+                totem->CastSpell(totem, 19823, true, NULL, NULL, totem->GetObjectGuid());
                 return;
             }
             break;
@@ -5302,7 +5304,7 @@ void Spell::EffectSummonType(SpellEffectIndex eff_idx)
                             if (!cInfo)
                                 return;
 
-                            // FIXME: not all totems and similar cases seelcted by this check...
+                            // FIXME: not all totems and similar cases selected by this check...
                             if (cInfo->type == CREATURE_TYPE_TOTEM)
                                 DoSummonTotem(eff_idx);
                             else
@@ -7800,14 +7802,14 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     unitTarget->RemoveAurasDueToSpell(47636);
                     return;
                 }
-                case 47958:                                 // Crystal Spikes 
-                { 
-                    // Summon Crystal Spike 
-                    m_caster->CastSpell(m_caster, 47954, true); 
-                    m_caster->CastSpell(m_caster, 47955, true); 
-                    m_caster->CastSpell(m_caster, 47956, true); 
-                    m_caster->CastSpell(m_caster, 47957, true); 
-                    return; 
+                case 47958:                                 // Crystal Spikes
+                {
+                    // Summon Crystal Spike
+                    m_caster->CastSpell(m_caster, 47954, true);
+                    m_caster->CastSpell(m_caster, 47955, true);
+                    m_caster->CastSpell(m_caster, 47956, true);
+                    m_caster->CastSpell(m_caster, 47957, true);
+                    return;
                 }
                 case 48603:                                 // High Executor's Branding Iron
                     // Torture the Torturer: High Executor's Branding Iron Impact
@@ -8130,7 +8132,7 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                 }
                 case 53110:									// Devour Humanoid
                 {
-                    unitTarget->CastSpell(m_caster, m_spellInfo->CalculateSimpleValue(eff_idx),true, NULL, NULL, m_caster->GetObjectGuid()); 
+                    unitTarget->CastSpell(m_caster, m_spellInfo->CalculateSimpleValue(eff_idx),true, NULL, NULL, m_caster->GetObjectGuid());
                     return;
                 }
                 case 53242:                                 // Clear Gift of Tharonja
@@ -8326,6 +8328,21 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(m_caster,59805,true);
                     return;
                 }
+                case 62428:                                 // Load into Catapult
+                {
+                    if (VehicleKit *seat = m_caster->GetVehicleKit())
+                    {
+                        if (Unit *passenger = seat->GetPassenger(0))
+                        {
+                            if (Unit *demolisher = m_caster->GetVehicle()->GetBase())
+                            {
+                                passenger->EnterVehicle(demolisher->GetVehicleKit(), 3);
+                                demolisher->CastSpell(demolisher, 62340, true);
+                            }
+                        }
+                    }
+                    return;
+                }
                 case 62524:                                 // Attuned to Nature 2 Dose Reduction
                 case 62525:                                 // Attuned to Nature 10 Dose Reduction
                 case 62521:                                 // Attuned to Nature 25 Dose Reduction
@@ -8426,28 +8443,15 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                             sLog.outError("Unknown Lightwell spell caster %u", m_caster->GetEntry());
                             return;
                     }
-
-                    if (SpellAuraHolder* chargesholder = m_caster->GetSpellAuraHolder(59907))
+                    Aura* chargesaura = m_caster->GetAura(59907, EFFECT_INDEX_0);
+                    if(chargesaura && chargesaura->GetHolder() && chargesaura->GetHolder()->GetAuraCharges() >= 1)
                     {
-                        if (Unit *owner = m_caster->GetOwner())
-                        {
-                            if (const SpellEntry *pSpell = sSpellStore.LookupEntry(spellID))
-                            {
-                                damage = owner->SpellHealingBonusDone(unitTarget, pSpell, pSpell->EffectBasePoints[EFFECT_INDEX_0], DOT);
-                                damage = unitTarget->SpellHealingBonusTaken(owner, pSpell, damage, DOT);
-
-                                if (Aura *dummy = owner->GetDummyAura(55673))
-                                    damage += damage * dummy->GetModifier()->m_amount /100.0f;
-                            }
-                        }
-
-                        uint8 charges = chargesholder->GetAuraCharges();
-
-                        if (charges >= 1)
-                            m_caster->CastCustomSpell(unitTarget, spellID, &damage, NULL, NULL, true, NULL, NULL, m_originalCasterGUID);
-                        if (charges <= 1)
-                            ((TemporarySummon*)m_caster)->UnSummon();
+                        chargesaura->GetHolder()->SetAuraCharges(chargesaura->GetHolder()->GetAuraCharges() - 1);
+                        m_caster->CastSpell(unitTarget, spellID, false, NULL, NULL);
                     }
+                    else
+                        ((TemporarySummon*)m_caster)->UnSummon();
+
                     return;
                 }
                 case 62217:                                 // Unstable Energy (Ulduar: Freya's elder)
@@ -11171,7 +11175,7 @@ void Spell::EffectServerSide(SpellEffectIndex eff_idx)
 void Spell::EffectSuspendGravity(SpellEffectIndex eff_idx)
 {
     if (!unitTarget)
-        return;                
+        return;
 
     float fTargetX, fTargetY, fTargetZ;
     unitTarget->GetPosition(fTargetX, fTargetY, fTargetZ);
