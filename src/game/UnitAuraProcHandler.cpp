@@ -2342,8 +2342,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                 case 31876:
                 case 31877:
                 case 31878:
+                {
                     // triggered only at casted Judgement spells, not at additional Judgement effects
-                    if(!procSpell || procSpell->Category != 1210)
+                    if(!procSpell || !procSpell->SpellFamilyFlags.test<CF_PALADIN_JUDGEMENT_ACTIVATE>())
                         return SPELL_AURA_PROC_FAILED;
 
                     target = this;
@@ -2352,6 +2353,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                     // Replenishment
                     CastSpell(this, 57669, true, NULL, triggeredByAura);
                     break;
+                }
                 // Paladin Tier 6 Trinket (Ashtongue Talisman of Zeal)
                 case 40470:
                 {
@@ -3807,6 +3809,19 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 if (HasAura(67544))
                     return SPELL_AURA_PROC_FAILED;
             }
+            // Cobra strike
+            else if (auraSpellInfo->SpellIconID == 2936)
+            {
+                if (Pet* pet = GetPet())
+                {
+                    if (pet->isAlive())
+                    {
+                        pet->CastSpell(pet,trigger_spell_id,true);
+                        return SPELL_AURA_PROC_OK;
+                    }
+                }
+                return SPELL_AURA_PROC_FAILED;
+            }
             // Item - Hunter T9 4P Bonus
             else if (auraSpellInfo->Id == 67151)
             {
@@ -4579,6 +4594,16 @@ SpellAuraProcResult Unit::HandleAddFlatModifierAuraProc(Unit* pVictim, uint32 /*
     switch (spellInfo->Id)
     {
         case 53257:                             // Cobra strike
+            // Remove only single aura from stack
+            if (triggeredByAura->GetStackAmount() < 1)
+                return SPELL_AURA_PROC_CANT_TRIGGER;
+            if (triggeredByAura->GetHolder()->ModStackAmount(-1))
+            {
+                triggeredByAura->SetInUse(true);
+                RemoveAurasByCasterSpell(triggeredByAura->GetSpellProto()->Id, triggeredByAura->GetCasterGuid());
+                triggeredByAura->SetInUse(false);
+            }
+            break;
         case 55166:                             // Tidal Force
             // Remove only single aura from stack
             if (triggeredByAura->GetStackAmount() > 1 && !triggeredByAura->GetHolder()->ModStackAmount(-1))
