@@ -57,7 +57,7 @@ enum CreatureFlagsExtra
 };
 
 // GCC have alternative #pragma pack(N) syntax and old gcc version not support pack(push,N), also any gcc version not support it at some platform
-#if defined( __GNUC__ )
+#if defined(__GNUC__)
 #pragma pack(1)
 #else
 #pragma pack(push,1)
@@ -152,11 +152,11 @@ struct CreatureInfo
 
     SkillType GetRequiredLootSkill() const
     {
-        if(type_flags & CREATURE_TYPEFLAGS_HERBLOOT)
+        if (type_flags & CREATURE_TYPEFLAGS_HERBLOOT)
             return SKILL_HERBALISM;
-        else if(type_flags & CREATURE_TYPEFLAGS_MININGLOOT)
+        else if (type_flags & CREATURE_TYPEFLAGS_MININGLOOT)
             return SKILL_MINING;
-        else if(type_flags & CREATURE_TYPEFLAGS_ENGINEERLOOT)
+        else if (type_flags & CREATURE_TYPEFLAGS_ENGINEERLOOT)
             return SKILL_ENGINEERING;
         else
             return SKILL_SKINNING;                          // normal case
@@ -169,7 +169,7 @@ struct CreatureInfo
 
     bool isTameable(bool exotic) const
     {
-        if(type != CREATURE_TYPE_BEAST || family == 0 || (type_flags & CREATURE_TYPEFLAGS_TAMEABLE) == 0)
+        if (type != CREATURE_TYPE_BEAST || family == 0 || (type_flags & CREATURE_TYPEFLAGS_TAMEABLE) == 0)
             return false;
 
         // if can tame exotic then can tame any temable
@@ -254,7 +254,7 @@ typedef std::map<uint8 /* index */,     CreatureSpellEntry> CreatureSpellsList;
 typedef std::map<uint32 /*creature_id*/,CreatureSpellsList> CreatureSpellStorage;
 
 // GCC have alternative #pragma pack() syntax and old gcc version not support pack(pop), also any gcc version not support it at some platform
-#if defined( __GNUC__ )
+#if defined(__GNUC__)
 #pragma pack()
 #else
 #pragma pack(pop)
@@ -327,16 +327,16 @@ struct VendorItemData
 
     VendorItem* GetItem(uint32 slot) const
     {
-        if(slot>=m_items.size()) return NULL;
+        if (slot>=m_items.size()) return NULL;
         return m_items[slot];
     }
     bool Empty() const { return m_items.empty(); }
     uint8 GetItemCount() const { return m_items.size(); }
-    void AddItem( uint32 item, uint32 maxcount, uint32 ptime, uint32 ExtendedCost)
+    void AddItem(uint32 item, uint32 maxcount, uint32 ptime, uint32 ExtendedCost)
     {
         m_items.push_back(new VendorItem(item, maxcount, ptime, ExtendedCost));
     }
-    bool RemoveItem( uint32 item_id );
+    bool RemoveItem(uint32 item_id);
     VendorItem const* FindItemCostPair(uint32 item_id, uint32 extendedCost) const;
 
     void Clear()
@@ -506,7 +506,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
                                                             // redefine Unit::IsImmuneToSpellEffect
         bool IsElite() const
         {
-            if(IsPet())
+            if (IsPet())
                 return false;
 
             uint32 rank = GetCreatureInfo()->rank;
@@ -515,7 +515,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
 
         bool IsWorldBoss() const
         {
-            if(IsPet())
+            if (IsPet())
                 return false;
 
             return GetCreatureInfo()->rank == CREATURE_ELITE_WORLDBOSS;

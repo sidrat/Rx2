@@ -43,7 +43,7 @@
 #include "Log.h"
 #include "DBCStores.h"
 
-#if defined( __GNUC__ )
+#if defined(__GNUC__)
 #pragma pack(1)
 #else
 #pragma pack(push,1)
@@ -90,7 +90,7 @@ struct ClientPktHeader
     uint32 cmd;
 };
 
-#if defined( __GNUC__ )
+#if defined(__GNUC__)
 #pragma pack()
 #else
 #pragma pack(pop)
@@ -192,7 +192,7 @@ int WorldSocket::SendPacket(const WorldPacket& pct)
         if (!pct.empty())
             mb->copy((const char*)pct.contents(), pct.size());
 
-        if(msg_queue()->enqueue_tail(mb, (ACE_Time_Value*)&ACE_Time_Value::zero) == -1)
+        if (msg_queue()->enqueue_tail(mb, (ACE_Time_Value*)&ACE_Time_Value::zero) == -1)
         {
             sLog.outError("WorldSocket::SendPacket enqueue_tail");
             mb->release();
@@ -656,7 +656,7 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
 
     if (opcode >= NUM_MSG_TYPES)
     {
-        sLog.outError( "SESSION: received nonexistent opcode 0x%.4X", opcode);
+        sLog.outError("SESSION: received nonexistent opcode 0x%.4X", opcode);
         return -1;
     }
 
@@ -841,7 +841,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
 
     id = fields[0].GetUInt32();
     security = fields[1].GetUInt16();
-    if(security > SEC_ADMINISTRATOR)                        // prevent invalid security settings in DB
+    if (security > SEC_ADMINISTRATOR)                        // prevent invalid security settings in DB
         security = SEC_ADMINISTRATOR;
 
     K.SetHexStr(fields[2].GetString());
