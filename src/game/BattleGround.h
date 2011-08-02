@@ -464,7 +464,7 @@ class BattleGround
 
         void SendMessageToAll(int32 entry, ChatMsg type, Player const* source = NULL);
         void SendYellToAll(int32 entry, uint32 language, ObjectGuid guid);
-        void PSendMessageToAll(int32 entry, ChatMsg type, Player const* source, ...  );
+        void PSendMessageToAll(int32 entry, ChatMsg type, Player const* source, ... );
         void SendWarningToAll(int32 entry, ...);
 
         GameObject* GetBGObject(uint32 type);
@@ -699,7 +699,7 @@ struct WorldStatePair
 
 inline void FillInitialWorldState(ByteBuffer& data, uint32& count, WorldStatePair const* array)
 {
-    for(WorldStatePair const* itr = array; itr->state; ++itr)
+    for (WorldStatePair const* itr = array; itr->state; ++itr)
     {
         data << uint32(itr->state);
         data << uint32(itr->value);

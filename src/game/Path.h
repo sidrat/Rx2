@@ -40,14 +40,14 @@ class Path
         float GetTotalLength(uint32 start, uint32 end) const
         {
             float len = 0.0f;
-            for(unsigned int idx=start+1; idx < end; ++idx)
+            for (unsigned int idx=start+1; idx < end; ++idx)
             {
                 PathNode const& node = i_nodes[idx];
                 PathNode const& prev = i_nodes[idx-1];
                 float xd = node.x - prev.x;
                 float yd = node.y - prev.y;
                 float zd = node.z - prev.z;
-                len += sqrtf( xd*xd + yd*yd + zd*zd );
+                len += sqrtf(xd*xd + yd*yd + zd*zd);
             }
             return len;
         }
@@ -64,7 +64,7 @@ class Path
                 float xd = x - node.x;
                 float yd = y - node.y;
                 float zd = z - node.z;
-                len += sqrtf( xd*xd + yd*yd + zd*zd );
+                len += sqrtf(xd*xd + yd*yd + zd*zd);
             }
 
             return len;

@@ -69,21 +69,21 @@ class MANGOS_DLL_SPEC ChatHandler
         explicit ChatHandler(Player* player);
         ~ChatHandler();
 
-        static void FillMessageData( WorldPacket *data, WorldSession* session, uint8 type, uint32 language, const char *channelName, ObjectGuid targetGuid, const char *message, Unit *speaker);
+        static void FillMessageData(WorldPacket *data, WorldSession* session, uint8 type, uint32 language, const char *channelName, ObjectGuid targetGuid, const char *message, Unit *speaker);
 
-        static void FillMessageData( WorldPacket *data, WorldSession* session, uint8 type, uint32 language, ObjectGuid targetGuid, const char* message)
+        static void FillMessageData(WorldPacket *data, WorldSession* session, uint8 type, uint32 language, ObjectGuid targetGuid, const char* message)
         {
-            FillMessageData( data, session, type, language, NULL, targetGuid, message, NULL);
+            FillMessageData(data, session, type, language, NULL, targetGuid, message, NULL);
         }
 
-        static void FillMessageData( WorldPacket *data, WorldSession* session, uint8 type, uint32 language, const char* message)
+        static void FillMessageData(WorldPacket *data, WorldSession* session, uint8 type, uint32 language, const char* message)
         {
-            FillMessageData( data, session, type, language, NULL, ObjectGuid(), message, NULL);
+            FillMessageData(data, session, type, language, NULL, ObjectGuid(), message, NULL);
         }
 
-        void FillSystemMessageData( WorldPacket *data, const char* message )
+        void FillSystemMessageData(WorldPacket *data, const char* message)
         {
-            FillMessageData( data, m_session, CHAT_MSG_SYSTEM, LANG_UNIVERSAL, ObjectGuid(), message );
+            FillMessageData(data, m_session, CHAT_MSG_SYSTEM, LANG_UNIVERSAL, ObjectGuid(), message);
         }
 
         static char* LineFromMessage(char*& pos) { char* start = strtok(pos,"\n"); pos = NULL; return start; }
@@ -92,15 +92,15 @@ class MANGOS_DLL_SPEC ChatHandler
         virtual const char *GetMangosString(int32 entry) const;
         const char *GetOnOffStr(bool value) const;
 
-        virtual void SendSysMessage(  const char *str);
+        virtual void SendSysMessage( const char *str);
 
-        void SendSysMessage(          int32     entry);
-        void PSendSysMessage(         const char *format, ...) ATTR_PRINTF(2,3);
-        void PSendSysMessage(         int32     entry, ...  );
+        void SendSysMessage(         int32     entry);
+        void PSendSysMessage(        const char *format, ...) ATTR_PRINTF(2,3);
+        void PSendSysMessage(        int32     entry, ... );
 
         void SendGlobalSysMessage(const char *str);
         void PSendGlobalSysMessage(const char *format, ...) ATTR_PRINTF(2,3);
-        void PSendGlobalSysMessage(int32 entry, ...  );
+        void PSendGlobalSysMessage(int32 entry, ... );
 
         bool ParseCommands(const char* text);
         ChatCommand const* FindCommand(char const* text);
@@ -664,7 +664,7 @@ class MANGOS_DLL_SPEC ChatHandler
         bool ShowAccountListHelper(QueryResult* result, uint32* limit = NULL, bool title = true, bool error = true);
         void ShowAchievementListHelper(AchievementEntry const * achEntry, LocaleConstant loc, time_t const* date = NULL, Player* target = NULL);
         void ShowAchievementCriteriaListHelper(AchievementCriteriaEntry const* criEntry, AchievementEntry const * achEntry, LocaleConstant loc, Player* target = NULL);
-        void ShowFactionListHelper(FactionEntry const * factionEntry, LocaleConstant loc, FactionState const* repState = NULL, Player * target = NULL );
+        void ShowFactionListHelper(FactionEntry const * factionEntry, LocaleConstant loc, FactionState const* repState = NULL, Player * target = NULL);
         void ShowItemListHelper(uint32 itemId, int loc_idx, Player* target = NULL);
         void ShowQuestListHelper(uint32 questId, int32 loc_idx, Player* target = NULL);
         bool ShowPlayerListHelper(QueryResult* result, uint32* limit = NULL, bool title = true, bool error = true);
