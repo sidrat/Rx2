@@ -1,4 +1,22 @@
 /*
+ * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2011 MangosR2
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+/*
     Name    : PlayerbotDruidAI.cpp
     Complete: maybe around 33%
     Authors : rrtn, Natsukawa
@@ -103,6 +121,20 @@ bool PlayerbotDruidAI::HealTarget(Unit *target)
     return false;
 } // end HealTarget
 
+bool PlayerbotDruidAI::IsFeral()
+{
+    if(MOONKIN_FORM > 0)
+        return true;
+    else if(DIRE_BEAR_FORM > 0)
+        return true;
+    else if(BEAR_FORM > 0)
+        return true;
+    else if(CAT_FORM > 0)
+        return true;
+    else
+        return false;
+}
+
 void PlayerbotDruidAI::DoNextCombatManeuver(Unit *pTarget)
 {
     PlayerbotAI* ai = GetAI();
@@ -122,20 +154,14 @@ void PlayerbotDruidAI::DoNextCombatManeuver(Unit *pTarget)
     Player *m_bot = GetPlayerBot();
     Unit* pVictim = pTarget->getVictim();
 
-    if (pVictim && ai->GetHealthPercent() >= 40 && GetMaster()->GetHealth() >= GetMaster()->GetMaxHealth() * 0.4)
-    {
-        if (pVictim == m_bot)
-            SpellSequence = DruidTank;
-    }
-    else if (pTarget->GetHealth() > pTarget->GetMaxHealth() * 0.8 && pVictim)
-    {
-        if (pVictim != m_bot)
-            SpellSequence = DruidSpell;
-    }
-    else if (ai->GetHealthPercent() <= 40 || GetMaster()->GetHealth() <= GetMaster()->GetMaxHealth() * 0.4)
-        SpellSequence = DruidHeal;
+    if (ai->GetCombatOrder() == PlayerbotAI::ORDERS_HEAL) // && ai->GetMovementOrder() == PlayerbotAI::MOVEMENT_STAY)
+         SpellSequence = DruidHeal;
+    else if (IsFeral() && ai->GetCombatOrder() == PlayerbotAI::ORDERS_ASSIST) // && ai->GetMovementOrder() == PlayerbotAI::MOVEMENT_STAY)
+         SpellSequence = DruidCombat;
+    else if (IsFeral() && ai->GetCombatOrder() == PlayerbotAI::ORDERS_TANK)
+        SpellSequence = DruidTank;
     else
-        SpellSequence = DruidCombat;
+        SpellSequence = DruidSpell;
 
     switch (SpellSequence)
     {
