@@ -108,7 +108,7 @@ bool AntiCheat::CheckNull()
 AntiCheatCheckEntry* AntiCheat::_FindCheck(AntiCheatCheck checktype)
 {
 
-    for (uint16 i = 0; AntiCheatCheckList[i].checkType != CHECK_MAX; ++i)
+    for(uint16 i = 0; AntiCheatCheckList[i].checkType != CHECK_MAX; ++i)
     {
         AntiCheatCheckEntry* pEntry = &AntiCheatCheckList[i];
         if (pEntry->checkType == checktype)
@@ -176,7 +176,7 @@ bool AntiCheat::_DoAntiCheatCheck(AntiCheatCheck checktype)
     // Subchecks, if exist
     if (checktype < 100 && _check->active && CheckNeeded(checktype))
     {
-        for (int i=1; i < 99; ++i)
+        for (int i=1; i < 99; ++i )
         {
             uint32 subcheck = checktype * 100 + i;
 
@@ -245,9 +245,9 @@ void AntiCheat::DoAntiCheatAction(AntiCheatCheck checkType, std::string reason)
         namechat.append(name);
         namechat.append("]|h|r ");
         sprintf(buffer," Map %u (%s), Zone %u (%s) Area |cbbdd0000|Harea:%u|h[%s]|h|r ",
-        GetPlayer()->GetMapId(), (mapEntry ? mapEntry->name[sWorld.GetDefaultDbcLocale()] : "<unknown>"),
-        zone_id, (zoneEntry ? zoneEntry->area_name[sWorld.GetDefaultDbcLocale()] : "<unknown>"),
-        area_id, (areaEntry ? areaEntry->area_name[sWorld.GetDefaultDbcLocale()] : "<unknown>"));
+        GetPlayer()->GetMapId(), (mapEntry ? mapEntry->name[sWorld.GetDefaultDbcLocale()] : "<unknown>" ),
+        zone_id, (zoneEntry ? zoneEntry->area_name[sWorld.GetDefaultDbcLocale()] : "<unknown>" ),
+        area_id, (areaEntry ? areaEntry->area_name[sWorld.GetDefaultDbcLocale()] : "<unknown>" ));
 
         if (m_currentspellID)
         {
@@ -259,7 +259,7 @@ void AntiCheat::DoAntiCheatAction(AntiCheatCheck checkType, std::string reason)
 
         namechat.append(buffer);
 
-        for (int i=0; i < ANTICHEAT_ACTIONS; ++i)
+        for (int i=0; i < ANTICHEAT_ACTIONS; ++i )
         {
             AntiCheatAction actionID = AntiCheatAction(config->actionType[i]);
 
@@ -337,7 +337,7 @@ void AntiCheat::DoAntiCheatAction(AntiCheatCheck checkType, std::string reason)
 
     if (config->actionType[0] != ANTICHEAT_ACTION_NULL)
     {
-        if (reason == "")
+        if (reason == "" )
         {
             sLog.outError("AntiCheat action log: Missing Reason parameter!");
             return;
@@ -345,7 +345,7 @@ void AntiCheat::DoAntiCheatAction(AntiCheatCheck checkType, std::string reason)
 
         const char* playerName = GetPlayer()->GetName();
 
-        if (!playerName)
+        if ( !playerName )
         {
            sLog.outError("AntiCheat action log: Player with no name?");
            return;
@@ -377,13 +377,13 @@ bool AntiCheat::CheckNeeded(AntiCheatCheck checktype)
 
     AntiCheatCheck checkMainType =  (checktype >= 100) ? AntiCheatCheck(checktype / 100) : checktype;
 
-    switch(checkMainType)
+    switch( checkMainType)
     {
         case CHECK_NULL:
             return false;
             break;
         case CHECK_MOVEMENT:
-            if ( GetPlayer()->GetTransport()
+            if (   GetPlayer()->GetTransport()
                 || GetPlayer()->HasMovementFlag(MOVEFLAG_ONTRANSPORT) 
                 || GetMover()->GetMotionMaster()->GetCurrentMovementGeneratorType() == FLIGHT_MOTION_TYPE
                 || GetPlayer()->IsTaxiFlying())
@@ -409,10 +409,10 @@ bool AntiCheat::CheckNeeded(AntiCheatCheck checktype)
             return false;
     }
 
-    if (checktype < 100)
+    if (checktype < 100 )
         return true;
 
-    switch(checktype)
+    switch( checktype)
     {
         case CHECK_MOVEMENT_SPEED:
             if  (GetMover()->HasAura(56266))
@@ -545,7 +545,7 @@ bool AntiCheat::CheckSpeed()
             mode = "MOVE_RUN";
         }
 
-    if (moveSpeed / speedRate <= m_currentConfig->checkFloatParam[0])
+    if ( moveSpeed / speedRate <= m_currentConfig->checkFloatParam[0] )
         return true;
 
     char buffer[255];
@@ -559,11 +559,11 @@ bool AntiCheat::CheckSpeed()
 
 bool AntiCheat::CheckWaterWalking()
 {
-    if  (  GetMover()->HasAuraType(SPELL_AURA_WATER_WALK)
+    if  (   GetMover()->HasAuraType(SPELL_AURA_WATER_WALK)
         ||  GetMover()->HasAura(60068)
         ||  GetMover()->HasAura(61081)
         ||  GetMover()->HasAuraType(SPELL_AURA_GHOST)
-       )
+        )
         return true;
 
     m_currentCheckResult.clear();
@@ -591,7 +591,7 @@ bool AntiCheat::CheckMountain()
     if (m_currentmovementInfo->HasMovementFlag(MovementFlags(MOVEFLAG_FLYING | MOVEFLAG_SWIMMING)))
         return true;
 
-    if (m_currentDeltaZ > 0)
+    if ( m_currentDeltaZ > 0 )
         return true;
 
     int  serverDelta = WorldTimer::getMSTimeDiff(m_oldCheckTime[CHECK_MOVEMENT_MOUNTAIN],WorldTimer::getMSTime());
@@ -600,7 +600,7 @@ bool AntiCheat::CheckMountain()
 
     float tg_z = (m_currentDelta > 0.0f) ? (-m_currentDeltaZ / m_currentDelta) : -99999;
 
-    if (tg_z < m_currentConfig->checkFloatParam[1] || zSpeed < m_currentConfig->checkFloatParam[0])
+    if (tg_z < m_currentConfig->checkFloatParam[1] || zSpeed < m_currentConfig->checkFloatParam[0] )
         return true;
 
     char buffer[255];
@@ -694,7 +694,7 @@ bool AntiCheat::CheckTp2Plane()
 
     plane_z = GetMover()->GetTerrain()->GetHeight(m_currentmovementInfo->GetPos()->x, m_currentmovementInfo->GetPos()->y, MAX_HEIGHT) - m_currentmovementInfo->GetPos()->z;
     plane_z = (plane_z < -500.0f) ? 0 : plane_z; //check holes in heigth map
-    if (plane_z < m_currentConfig->checkFloatParam[1] && plane_z > -m_currentConfig->checkFloatParam[1])
+    if(plane_z < m_currentConfig->checkFloatParam[1] && plane_z > -m_currentConfig->checkFloatParam[1])
             return true;
 
     char buffer[255];
@@ -715,7 +715,7 @@ bool AntiCheat::CheckZAxis()
     float delta_x   = GetPlayer()->GetPositionX() - m_currentmovementInfo->GetPos()->x;
     float delta_y   = GetPlayer()->GetPositionY() - m_currentmovementInfo->GetPos()->y;
 
-    if (fabs(delta_x) > m_currentConfig->checkFloatParam[0] || fabs(delta_y) > m_currentConfig->checkFloatParam[0])
+    if(fabs(delta_x) > m_currentConfig->checkFloatParam[0] || fabs(delta_y) > m_currentConfig->checkFloatParam[0])
         return true;
 
     float delta_z   = GetPlayer()->GetPositionZ() - m_currentmovementInfo->GetPos()->z;
@@ -789,7 +789,7 @@ bool AntiCheat::CheckSpellFamily()
 
     SkillLineAbilityMapBounds skill_bounds = sSpellMgr.GetSkillLineAbilityMapBounds(m_currentspellID);
 
-    for (SkillLineAbilityMap::const_iterator _spell_idx = skill_bounds.first; _spell_idx != skill_bounds.second; ++_spell_idx)
+    for(SkillLineAbilityMap::const_iterator _spell_idx = skill_bounds.first; _spell_idx != skill_bounds.second; ++_spell_idx)
     {
         SkillLineEntry const *pSkill = sSkillLineStore.LookupEntry(_spell_idx->second->skillId);
 
@@ -884,14 +884,14 @@ bool AntiCheat::CheckMeleeDamage()
 
 bool AntiCheat::isCanFly()
 {
-    if ( GetMover()->HasAuraType(SPELL_AURA_FLY)
+    if (   GetMover()->HasAuraType(SPELL_AURA_FLY)
         || GetMover()->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED)
         || GetMover()->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED)
         || GetMover()->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACKING)
         || GetMover()->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED_STACKING)
         || GetMover()->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACKING)
         || GetMover()->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED_NOT_STACKING)
-      )
+       )
         return true;
 
     return false;

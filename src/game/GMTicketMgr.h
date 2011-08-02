@@ -123,7 +123,7 @@ class GMTicketMgr
         GMTicket* GetGMTicket(ObjectGuid guid)
         {
             GMTicketMap::iterator itr = m_GMTicketMap.find(guid);
-            if (itr == m_GMTicketMap.end())
+            if(itr == m_GMTicketMap.end())
                 return NULL;
             return &(itr->second);
         }
@@ -140,7 +140,7 @@ class GMTicketMgr
 
             GMTicketList::iterator itr = m_GMTicketListByCreatingOrder.begin();
             std::advance(itr, pos);
-            if (itr == m_GMTicketListByCreatingOrder.end())
+            if(itr == m_GMTicketListByCreatingOrder.end())
                 return NULL;
             return *itr;
         }
@@ -149,7 +149,7 @@ class GMTicketMgr
         void Close(ObjectGuid guid)
         {
             GMTicketMap::iterator itr = m_GMTicketMap.find(guid);
-            if (itr == m_GMTicketMap.end())
+            if(itr == m_GMTicketMap.end())
                 return;
             itr->second.CloseInDB();
             m_GMTicketListByCreatingOrder.remove(&itr->second);
