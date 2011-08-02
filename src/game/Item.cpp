@@ -840,12 +840,12 @@ bool Item::CanBeTraded(bool mail, bool trade) const
     if ((!mail || !IsBoundAccountWide()) && (IsSoulBound() && (!HasFlag(ITEM_FIELD_FLAGS, ITEM_DYNFLAG_BOP_TRADEABLE) || !trade)))
         return false;
 
-    if (IsBag() && (Player::IsBagPos(GetPos()) || !((Bag const*)this)->IsEmpty()))
+    if (IsBag() && (Player::IsBagPos(GetPos()) || !((Bag const*)this)->IsEmpty()) )
         return false;
 
     if (Player* owner = GetOwner())
     {
-        if (owner->CanUnequipItem(GetPos(), false) !=  EQUIP_ERR_OK)
+        if (owner->CanUnequipItem(GetPos(), false) !=  EQUIP_ERR_OK )
             return false;
         if (owner->GetLootGuid() == GetObjectGuid())
             return false;
@@ -1081,7 +1081,7 @@ void Item::SendTimeUpdate(Player* owner)
     owner->GetSession()->SendPacket(&data);
 }
 
-Item* Item::CreateItem(uint32 item, uint32 count, Player const* player, uint32 randomPropertyId)
+Item* Item::CreateItem( uint32 item, uint32 count, Player const* player, uint32 randomPropertyId)
 {
     if (count < 1)
         return NULL;                                        //don't create item at zero count
@@ -1104,7 +1104,7 @@ Item* Item::CreateItem(uint32 item, uint32 count, Player const* player, uint32 r
                     std::ostringstream ss;
                     sLog.outDetail("WoWArmory: write feed log (guid: %u, type: 2, data: %u)", player->GetGUIDLow(), item);
                     ss << "REPLACE INTO armory_character_feed_log (guid, type, data, date, counter, item_guid) VALUES (" << player->GetGUIDLow() << ", 2, " << item << ", UNIX_TIMESTAMP(NOW()), 1," << pItem->GetGUIDLow()  << ")";
-                    CharacterDatabase.PExecute(ss.str().c_str());
+                    CharacterDatabase.PExecute( ss.str().c_str() );
                 }
             }
             /** World of Warcraft Armory **/
@@ -1308,7 +1308,7 @@ bool Item::IsEligibleForRefund()
     if (proto->MaxCount > 1)
         return false;
 
-    for (int i = 0; i < 5; ++i)
+    for(int i = 0; i < 5; ++i)
     {
         _Spell spell = proto->Spells[i];
 
@@ -1335,7 +1335,7 @@ void Item::SetSoulboundTradeable(AllowedLooterSet* allowedLooters, Player* curre
         allowedGUIDs.clear();
         SetState(ITEM_CHANGED, currentOwner);
 
-        CharacterDatabase.PExecute("DELETE FROM item_soulbound_trade_data WHERE itemGuid = '%u'", GetGUIDLow());
+        CharacterDatabase.PExecute( "DELETE FROM item_soulbound_trade_data WHERE itemGuid = '%u'", GetGUIDLow() );
     }
 }
 
@@ -1365,7 +1365,7 @@ bool Item::HasTriggeredByAuraSpell(SpellEntry const* spellInfo) const
         _Spell const& spellData = proto->Spells[i];
 
         // no spell
-        if (!spellData.SpellId)
+        if(!spellData.SpellId)
             continue;
 
         // wrong triggering type
@@ -1374,7 +1374,7 @@ bool Item::HasTriggeredByAuraSpell(SpellEntry const* spellInfo) const
 
         // check if it is valid spell
         SpellEntry const* spellproto = sSpellStore.LookupEntry(spellData.SpellId);
-        if (!spellproto)
+        if(!spellproto)
             continue;
 
         for (int j = 0; j < MAX_EFFECT_INDEX; j++)

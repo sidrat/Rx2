@@ -156,12 +156,12 @@ bool ChatHandler::HandleUnmuteCommand(char* args)
     return true;
 }
 
-void ChatHandler::ShowTriggerTargetListHelper(uint32 id, AreaTrigger const* at, bool subpart /*= false*/)
+void ChatHandler::ShowTriggerTargetListHelper( uint32 id, AreaTrigger const* at, bool subpart /*= false*/ )
 {
     if (m_session)
     {
         char dist_buf[50];
-        if (!subpart)
+        if(!subpart)
         {
             float dist = m_session->GetPlayer()->GetDistance2d(at->target_X, at->target_Y);
             snprintf(dist_buf, 50, GetMangosString(LANG_TRIGGER_DIST), dist);
@@ -177,7 +177,7 @@ void ChatHandler::ShowTriggerTargetListHelper(uint32 id, AreaTrigger const* at, 
             subpart ? " -> " : "", id, at->target_mapId, at->target_X, at->target_Y, at->target_Z);
 }
 
-void ChatHandler::ShowTriggerListHelper(AreaTriggerEntry const * atEntry)
+void ChatHandler::ShowTriggerListHelper( AreaTriggerEntry const * atEntry )
 {
 
     char const* tavern = sObjectMgr.IsTavernAreaTrigger(atEntry->id) ? GetMangosString(LANG_TRIGGER_TAVERN) : "";
@@ -1229,7 +1229,7 @@ bool ChatHandler::HandleGUIDCommand(char* /*args*/)
     return true;
 }
 
-void ChatHandler::ShowAchievementListHelper(AchievementEntry const * achEntry, LocaleConstant loc, time_t const* date /*= NULL*/, Player* target /*= NULL */)
+void ChatHandler::ShowAchievementListHelper(AchievementEntry const * achEntry, LocaleConstant loc, time_t const* date /*= NULL*/, Player* target /*= NULL */ )
 {
     std::string name = achEntry->name[loc];
 
@@ -1316,7 +1316,7 @@ bool ChatHandler::HandleLookupAchievementCommand(char* args)
         if (!Utf8FitTo(name, wnamepart))
         {
             loc = 0;
-            for (; loc < MAX_LOCALE; ++loc)
+            for(; loc < MAX_LOCALE; ++loc)
             {
                 if (loc == GetSessionDbcLocale())
                     continue;
@@ -1352,7 +1352,7 @@ bool ChatHandler::HandleCharacterAchievementsCommand(char* args)
     LocaleConstant loc = GetSessionDbcLocale();
 
     CompletedAchievementMap const& complitedList = target->GetAchievementMgr().GetCompletedAchievements();
-    for (CompletedAchievementMap::const_iterator itr = complitedList.begin(); itr != complitedList.end(); ++itr)
+    for(CompletedAchievementMap::const_iterator itr = complitedList.begin(); itr != complitedList.end(); ++itr)
     {
         AchievementEntry const *achEntry = sAchievementStore.LookupEntry(itr->first);
         ShowAchievementListHelper(achEntry, loc, &itr->second.date, target);
@@ -1360,7 +1360,7 @@ bool ChatHandler::HandleCharacterAchievementsCommand(char* args)
     return true;
 }
 
-void ChatHandler::ShowFactionListHelper(FactionEntry const * factionEntry, LocaleConstant loc, FactionState const* repState /*= NULL*/, Player * target /*= NULL */)
+void ChatHandler::ShowFactionListHelper( FactionEntry const * factionEntry, LocaleConstant loc, FactionState const* repState /*= NULL*/, Player * target /*= NULL */ )
 {
     std::string name = factionEntry->name[loc];
 
@@ -1430,7 +1430,7 @@ bool ChatHandler::HandleLookupFactionCommand(char* args)
             if (!Utf8FitTo(name, wnamepart))
             {
                 loc = 0;
-                for (; loc < MAX_LOCALE; ++loc)
+                for(; loc < MAX_LOCALE; ++loc)
                 {
                     if (loc == GetSessionDbcLocale())
                         continue;
@@ -1460,7 +1460,7 @@ bool ChatHandler::HandleLookupFactionCommand(char* args)
 
 bool ChatHandler::HandleModifyPowerTypeCommand(char* args)
 {
-    if (!*args)
+    if(!*args)
         return false;
 
     int32 type = atoi((char*)args);
@@ -2974,7 +2974,7 @@ bool ChatHandler::HandleWpAddCommand(char* args)
                 // (0.001) - There is no other way to compare C++ floats with mySQL floats
                 // See also: http://dev.mysql.com/doc/refman/5.0/en/problems-with-float.html
                 const char* maxDIFF = "0.01";
-                result = WorldDatabase.PQuery("SELECT id, point FROM creature_movement WHERE (abs(position_x - %f) <= %s) and (abs(position_y - %f) <= %s) and (abs(position_z - %f) <= %s)",
+                result = WorldDatabase.PQuery("SELECT id, point FROM creature_movement WHERE (abs(position_x - %f) <= %s ) and (abs(position_y - %f) <= %s ) and (abs(position_z - %f) <= %s )",
                     target->GetPositionX(), maxDIFF, target->GetPositionY(), maxDIFF, target->GetPositionZ(), maxDIFF);
                 if (!result)
                 {
@@ -3599,7 +3599,7 @@ bool ChatHandler::HandleWpShowCommand(char* args)
             const char* maxDIFF = "0.01";
             PSendSysMessage(LANG_WAYPOINT_NOTFOUNDSEARCH, target->GetObjectGuid().GetRawValue());
 
-            result = WorldDatabase.PQuery("SELECT id, point, waittime, emote, spell, textid1, textid2, textid3, textid4, textid5, model1, model2 FROM creature_movement WHERE (abs(position_x - %f) <= %s) and (abs(position_y - %f) <= %s) and (abs(position_z - %f) <= %s)",
+            result = WorldDatabase.PQuery("SELECT id, point, waittime, emote, spell, textid1, textid2, textid3, textid4, textid5, model1, model2 FROM creature_movement WHERE (abs(position_x - %f) <= %s ) and (abs(position_y - %f) <= %s ) and (abs(position_z - %f) <= %s )",
                 target->GetPositionX(), maxDIFF, target->GetPositionY(), maxDIFF, target->GetPositionZ(), maxDIFF);
             if (!result)
             {
@@ -3617,7 +3617,7 @@ bool ChatHandler::HandleWpShowCommand(char* args)
             uint32 emote            = fields[3].GetUInt32();
             uint32 spell            = fields[4].GetUInt32();
             uint32 textid[MAX_WAYPOINT_TEXT];
-            for (int i = 0;  i < MAX_WAYPOINT_TEXT; ++i)
+            for(int i = 0;  i < MAX_WAYPOINT_TEXT; ++i)
                 textid[i]           = fields[5+i].GetUInt32();
             uint32 model1           = fields[10].GetUInt32();
             uint32 model2           = fields[11].GetUInt32();
@@ -3631,7 +3631,7 @@ bool ChatHandler::HandleWpShowCommand(char* args)
             PSendSysMessage(LANG_WAYPOINT_INFO_MODEL, 2, model2);
             PSendSysMessage(LANG_WAYPOINT_INFO_EMOTE, emote);
             PSendSysMessage(LANG_WAYPOINT_INFO_SPELL, spell);
-            for (int i = 0;  i < MAX_WAYPOINT_TEXT; ++i)
+            for(int i = 0;  i < MAX_WAYPOINT_TEXT; ++i)
                 PSendSysMessage(LANG_WAYPOINT_INFO_TEXT, i+1, textid[i], (textid[i] ? GetMangosString(textid[i]) : ""));
 
         } while (result->NextRow());
@@ -3929,7 +3929,7 @@ bool ChatHandler::HandleWpExportCommand(char *args)
         outfile << "INSERT INTO creature_movement ";
         outfile << "(id, point, position_x, position_y, position_z, orientation, model1, model2, waittime, emote, spell, textid1, textid2, textid3, textid4, textid5) VALUES ";
 
-        outfile << "(";
+        outfile << "( ";
         outfile << fields[15].GetUInt32();                  // id
         outfile << ", ";
         outfile << fields[0].GetUInt32();                   // point
@@ -4068,7 +4068,7 @@ bool ChatHandler::HandleCharacterReputationCommand(char* args)
     LocaleConstant loc = GetSessionDbcLocale();
 
     FactionStateList const& targetFSL = target->GetReputationMgr().GetStateList();
-    for (FactionStateList::const_iterator itr = targetFSL.begin(); itr != targetFSL.end(); ++itr)
+    for(FactionStateList::const_iterator itr = targetFSL.begin(); itr != targetFSL.end(); ++itr)
     {
         FactionEntry const *factionEntry = sFactionStore.LookupEntry(itr->second.ID);
 
@@ -4168,7 +4168,7 @@ bool ChatHandler::HandleLookupEventCommand(char* args)
 
     GameEventMgr::GameEventDataMap const& events = sGameEventMgr.GetEventMap();
 
-    for (uint32 id = 1; id < events.size(); ++id)
+    for(uint32 id = 1; id < events.size(); ++id)
     {
         if (!sGameEventMgr.IsValidEvent(id))
             continue;
@@ -4472,7 +4472,7 @@ bool ChatHandler::HandleLearnAllRecipesCommand(char* args)
         if (!Utf8FitTo(name, wnamepart))
         {
             loc = 0;
-            for (; loc < MAX_LOCALE; ++loc)
+            for(; loc < MAX_LOCALE; ++loc)
             {
                 if (loc==GetSessionDbcLocale())
                     continue;
@@ -4750,7 +4750,7 @@ bool ChatHandler::HandleLookupPoolCommand(char * args)
     uint32 counter = 0;
 
     // spawn pools for expected map or for not initialized shared pools state for non-instanceable maps
-    for (uint16 pool_id = 0; pool_id < sPoolMgr.GetMaxPoolId(); ++pool_id)
+    for(uint16 pool_id = 0; pool_id < sPoolMgr.GetMaxPoolId(); ++pool_id)
     {
         PoolTemplateData const& pool_template = sPoolMgr.GetPoolTemplate(pool_id);
 
@@ -4786,7 +4786,7 @@ bool ChatHandler::HandlePoolListCommand(char* args)
     uint32 counter = 0;
 
     // spawn pools for expected map or for not initialized shared pools state for non-instanceable maps
-    for (uint16 pool_id = 0; pool_id < sPoolMgr.GetMaxPoolId(); ++pool_id)
+    for(uint16 pool_id = 0; pool_id < sPoolMgr.GetMaxPoolId(); ++pool_id)
     {
         PoolTemplateData const& pool_template = sPoolMgr.GetPoolTemplate(pool_id);
         if (sPoolMgr.GetPoolTemplate(pool_id).CanBeSpawnedAtMap(mapState->GetMapEntry()))
@@ -4820,7 +4820,7 @@ bool ChatHandler::HandlePoolSpawnsCommand(char* args)
     SpawnedPoolData const& spawns = mapState->GetSpawnedPoolData();
 
     SpawnedPoolObjects const& crSpawns = spawns.GetSpawnedCreatures();
-    for (SpawnedPoolObjects::const_iterator itr = crSpawns.begin(); itr != crSpawns.end(); ++itr)
+    for(SpawnedPoolObjects::const_iterator itr = crSpawns.begin(); itr != crSpawns.end(); ++itr)
         if (!pool_id || pool_id == sPoolMgr.IsPartOfAPool<Creature>(*itr))
             if (CreatureData const* data = sObjectMgr.GetCreatureData(*itr))
                 if (CreatureInfo const* info = ObjectMgr::GetCreatureTemplate(data->id))
@@ -4828,7 +4828,7 @@ bool ChatHandler::HandlePoolSpawnsCommand(char* args)
                         *itr, info->Name, data->posX, data->posY, data->posZ, data->mapid);
 
     SpawnedPoolObjects const& goSpawns = spawns.GetSpawnedGameobjects();
-    for (SpawnedPoolObjects::const_iterator itr = goSpawns.begin(); itr != goSpawns.end(); ++itr)
+    for(SpawnedPoolObjects::const_iterator itr = goSpawns.begin(); itr != goSpawns.end(); ++itr)
         if (!pool_id || pool_id == sPoolMgr.IsPartOfAPool<GameObject>(*itr))
             if (GameObjectData const* data = sObjectMgr.GetGOData(*itr))
                 if (GameObjectInfo const* info = ObjectMgr::GetGameObjectInfo(data->id))
@@ -5104,7 +5104,7 @@ bool ChatHandler::HandleLookupTitleCommand(char* args)
             if (!Utf8FitTo(name, wnamepart))
             {
                 loc = 0;
-                for (; loc < MAX_LOCALE; ++loc)
+                for(; loc < MAX_LOCALE; ++loc)
                 {
                     if (loc == GetSessionDbcLocale())
                         continue;
@@ -5267,7 +5267,7 @@ bool ChatHandler::HandleTitlesSetMaskCommand(char* args)
 
     uint64 titles2 = titles;
 
-    for (uint32 i = 1; i < sCharTitlesStore.GetNumRows(); ++i)
+    for(uint32 i = 1; i < sCharTitlesStore.GetNumRows(); ++i)
         if (CharTitlesEntry const* tEntry = sCharTitlesStore.LookupEntry(i))
             titles2 &= ~(uint64(1) << tEntry->bit_index);
 
