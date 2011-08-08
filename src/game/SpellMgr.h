@@ -75,6 +75,7 @@ enum SpellSpecific
     SPELL_UA_IMMOLATE       = 23,                           // Unstable Affliction and Immolate
     SPELL_BLEED_DEBUFF      = 24,                           // Mangle and Trauma
     SPELL_MAGE_INTELLECT    = 25,
+    SPELL_SCROLL            = 30
 };
 
 SpellSpecific GetSpellSpecific(uint32 spellId);
@@ -567,6 +568,11 @@ inline bool IsSpellHiddenStackable(SpellEntry const* spellInfo)
         return false;
 
     return true;
+}
+
+inline bool IsSpellAllowDeadTarget(SpellEntry const* spellInfo)
+{
+    return spellInfo ? spellInfo->AttributesEx2 & SPELL_ATTR2_ALLOW_DEAD_TARGET : false;
 }
 
 // Diminishing Returns interaction with spells
@@ -1070,6 +1076,9 @@ class SpellMgr
         {
             return !canStackSpellRanksInSpellBook(spellInfo) && GetSpellRank(spellInfo->Id) != 0;
         }
+
+        static bool IsGroupBuff(SpellEntry const *spellInfo);
+        static bool IsStackableSpellAuraHolder(SpellEntry const *spellInfo);
 
         SpellEntry const* SelectAuraRankForLevel(SpellEntry const* spellInfo, uint32 Level) const;
 
