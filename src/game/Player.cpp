@@ -2548,6 +2548,27 @@ void Player::RemoveFromGroup(Group* group, ObjectGuid guid)
 {
     if (group)
     {
+        // remove all auras affecting only group members
+        if (Player *pLeaver = sObjectMgr.GetPlayer(guid))
+        {
+            for(GroupReference *itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+            {
+                if (Player *pGroupGuy = itr->getSource())
+                {
+                    // dont remove my auras from myself
+                    if (pGroupGuy->GetObjectGuid() == guid)
+                        continue;
+
+                    // remove all buffs cast by me from group members before leaving
+                    pGroupGuy->RemoveAllGroupBuffsFromCaster(guid);
+
+                    // remove from me all buffs cast by group members
+                    pLeaver->RemoveAllGroupBuffsFromCaster(pGroupGuy->GetObjectGuid());
+                }
+            }
+        }
+
+        // remove member from group
         if (group->RemoveMember(guid, 0) <= 1)
         {
             // group->Disband(); already disbanded in RemoveMember
@@ -2833,7 +2854,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     SetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS,0);
     for (int i = 0; i < MAX_SPELL_SCHOOL; ++i)
     {
-        SetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG+i, 0);
+        SetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG+i, 0);
         SetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+i, 0);
         SetFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT+i, 1.00f);
     }
@@ -19408,7 +19429,7 @@ void Player::AddSpellMod(Aura* aura, bool apply)
             int32 val = 0;
             for (AuraList::const_iterator itr = m_spellMods[mod->m_miscvalue].begin(); itr != m_spellMods[mod->m_miscvalue].end(); ++itr)
             {
-                if ((*itr)->GetModifier()->m_auraname == mod->m_auraname && (*itr)->GetSpellProto()->SpellFamilyFlags.test(eff))
+                if ((*itr)->GetModifier()->m_auraname == mod->m_auraname && ((*itr)->GetAuraSpellClassMask().test(eff)))
                     val += (*itr)->GetModifier()->m_amount;
             }
             val += apply ? mod->m_amount : -(mod->m_amount);
@@ -23060,14 +23081,14 @@ void Player::UpdateFallInformationIfNeed( MovementInfo const& minfo,uint16 opcod
         SetFallInformation(minfo.GetFallTime(), minfo.GetPos()->z);
 }
 
-void Player::UnsummonPetTemporaryIfAny()
+void Player::UnsummonPetTemporaryIfAny(bool full)
 {
     if (!GetMap())
         return;
 
     Pet* minipet = GetMiniPet();
 
-    if (minipet)
+    if (full && minipet)
         minipet->Unsummon(PET_SAVE_AS_DELETED, this);
 
     Pet* pet = GetPet();
@@ -23083,7 +23104,8 @@ void Player::UnsummonPetTemporaryIfAny()
             if (!_pet->isTemporarySummoned())
                 _pet->Unsummon(PET_SAVE_AS_CURRENT, this);
             else
-                _pet->Unsummon(PET_SAVE_NOT_IN_SLOT, this);
+                if (full)
+                    _pet->Unsummon(PET_SAVE_NOT_IN_SLOT, this);
         }
     }
 
@@ -23532,7 +23554,43 @@ void Player::ActivateSpec(uint8 specNum)
 
             for(int r = 0; r < MAX_TALENT_RANK; ++r)
                 if (talentInfo->RankID[r])
+                {
                     removeSpell(talentInfo->RankID[r],!IsPassiveSpell(talentInfo->RankID[r]),false);
+
+                    // if spell is a buff, remove it from group members
+                    // TODO: this should affect all players, not only group members?
+                    if (SpellEntry const *spellInfo = sSpellStore.LookupEntry(talentInfo->RankID[r]))
+                    {
+                        bool bRemoveAura = false;
+                        for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+                        {
+                            if ((spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AURA ||
+                                spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA_RAID) &&
+                                IsPositiveEffect(spellInfo, SpellEffectIndex(i)))
+                            {
+                                bRemoveAura = true;
+                                break;
+                            }
+                        }
+
+                        Group *group = GetGroup();
+
+                        if (bRemoveAura && group)
+                        {
+                            for(GroupReference *itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+                            {
+                                if (Player *pGroupGuy = itr->getSource())
+                                {
+                                    if (pGroupGuy->GetObjectGuid() == GetObjectGuid())
+                                        continue;
+
+                                    if (SpellAuraHolder *holder = pGroupGuy->GetSpellAuraHolder(talentInfo->RankID[r], GetObjectGuid()))
+                                        pGroupGuy->RemoveSpellAuraHolder(holder);
+                                }
+                            }
+                        }
+                    }
+                }
 
             specIter = m_talents[m_activeSpec].begin();
         }
