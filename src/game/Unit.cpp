@@ -1044,7 +1044,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             pVictim->AttackedBy(this);
         }
 
-        if (damagetype == DIRECT_DAMAGE || damagetype == SPELL_DIRECT_DAMAGE)
+        if(damagetype == DIRECT_DAMAGE || damagetype == SPELL_DIRECT_DAMAGE)
         {
             if (!spellProto || !(spellProto->AuraInterruptFlags&AURA_INTERRUPT_FLAG_DIRECT_DAMAGE))
                 pVictim->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_DIRECT_DAMAGE);
@@ -1089,19 +1089,11 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             next = i; ++next;
             if (spellProto && spellProto->Id == se->Id) // Not drop auras added by self
                 continue;
-            if ( se->AuraInterruptFlags & AURA_INTERRUPT_FLAG_DAMAGE )
+
+            if (!se->procFlags && (se->AuraInterruptFlags & AURA_INTERRUPT_FLAG_DAMAGE))
             {
-                bool remove = true;
-                if (se->procFlags & (1<<3))
-                {
-                    if (!roll_chance_i(se->procChance))
-                        remove = false;
-                }
-                if (remove)
-                {
-                    pVictim->RemoveAurasDueToSpell(i->second->GetId());
-                    next = vAuras.begin();
-                }
+                pVictim->RemoveAurasDueToSpell(i->second->GetId());
+                next = vAuras.begin();
             }
         }
 
@@ -4242,25 +4234,28 @@ float Unit::GetTotalAuraMultiplierByMiscValueForMask(AuraType auratype, uint32 m
         return 1.0f;
 
     float multiplier = 1.0f;
-    float nonStackingPos = 1.0f;
-    float nonStackingNeg = 1.0f;
+
+    int32 nonStackingPos = 0;
+    int32 nonStackingNeg = 0;
 
     AuraList const& mTotalAuraList = GetAurasByType(auratype);
     for(AuraList::const_iterator i = mTotalAuraList.begin();i != mTotalAuraList.end(); ++i)
     {
         Modifier* mod = (*i)->GetModifier();
 
-        if((*i)->IsStacking())
+        if (mask & (1 << (mod->m_miscvalue -1)))
         {
-            if (mask & (1 << (mod->m_miscvalue -1)))
+            if((*i)->IsStacking())
+            {
                 multiplier *= (100.0f + mod->m_amount)/100.0f;
-        }
-        else
-        {
-            if(mod->m_amount > nonStackingPos)
-                nonStackingPos = mod->m_amount;
-            else if(mod->m_amount < nonStackingNeg)
-                nonStackingNeg = mod->m_amount;
+            }
+            else
+            {
+                if(mod->m_amount > nonStackingPos)
+                    nonStackingPos = mod->m_amount;
+                else if(mod->m_amount < nonStackingNeg)
+                    nonStackingNeg = mod->m_amount;
+            }
         }
     }
 
@@ -4374,7 +4369,8 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
     // passive and persistent auras can stack with themselves any number of times
     if ((!holder->IsPassive() && !holder->IsPersistent() && !IsSpellHiddenStackable(aurSpellInfo)) || holder->IsAreaAura())
     {
-        SpellAuraHolderBounds spair = GetSpellAuraHolderBounds(aurSpellInfo->Id);
+        SpellAuraHolderMap tmpMap = GetSpellAuraHolderMap();
+        SpellAuraHolderBounds spair = tmpMap.equal_range(aurSpellInfo->Id);
 
         // take out same spell
         for (SpellAuraHolderMap::iterator iter = spair.first; iter != spair.second; ++iter)
@@ -5152,13 +5148,11 @@ void Unit::RemoveSpellAuraHolder(SpellAuraHolder *holder, AuraRemoveMode mode)
 
     // If holder in use (removed from code that plan access to it data after return)
     // store it in holder list with delayed deletion
-    if (holder->IsInUse())
+    if (holder && !holder->IsDeleted())
     {
         holder->SetDeleted();
         m_deletedHolders.push_back(holder);
     }
-    else
-        delete holder;
 
     if (mode != AURA_REMOVE_BY_EXPIRE && IsChanneledSpell(AurSpellInfo) && !IsAreaOfEffectSpell(AurSpellInfo) &&
         caster && caster->GetObjectGuid() != GetObjectGuid())
@@ -6061,7 +6055,7 @@ Unit* Unit::getAttackerForHelper()
             ObjectGuid guid = *i;
             Unit* attacker = GetMap()->GetUnit(guid);
             if (!attacker || !attacker->isAlive())
-                m_attackers.erase(i);
+                m_attackers.erase(guid);
             else
                 return attacker;
         }
@@ -6133,7 +6127,7 @@ bool Unit::Attack(Unit *victim, bool meleeAttack)
         addUnitState(UNIT_STAT_MELEE_ATTACKING);
 
     m_attacking = victim;
-    m_attacking->_addAttacker(this);
+    m_attacking->_addAttacker(GetObjectGuid());
 
     if (GetTypeId() == TYPEID_UNIT)
     {
@@ -6177,7 +6171,7 @@ bool Unit::AttackStop(bool targetSwitch /*=false*/)
 
     Unit* victim = m_attacking;
 
-    m_attacking->_removeAttacker(this);
+    m_attacking->_removeAttacker(GetObjectGuid());
     m_attacking = NULL;
 
     // Clear our target
@@ -6258,11 +6252,12 @@ void Unit::RemoveAllAttackers()
     while (!m_attackers.empty())
     {
         AttackerSet::iterator iter = m_attackers.begin();
-        Unit* attacker = GetMap()->GetUnit(*iter);
+        ObjectGuid guid = *iter;
+        Unit* attacker = GetMap()->GetUnit(guid);
         if(!attacker || !attacker->AttackStop())
         {
             sLog.outError("WORLD: Unit has an attacker that isn't attacking it!");
-            m_attackers.erase(iter);
+            m_attackers.erase(guid);
         }
     }
 }
@@ -9195,8 +9190,10 @@ void Unit::SetDeathState(DeathState s)
         RemoveMiniPet();
         UnsummonAllTotems();
 
+        i_motionMaster.Clear(false,true);
+        i_motionMaster.MoveIdle();
+
         StopMoving();
-        DisableSpline();
 
         ModifyAuraState(AURA_STATE_HEALTHLESS_20_PERCENT, false);
         ModifyAuraState(AURA_STATE_HEALTHLESS_35_PERCENT, false);
@@ -10189,7 +10186,6 @@ void Unit::CleanupsBeforeDelete()
         else
             getHostileRefManager().deleteReferences();
         RemoveAllAuras(AURA_REMOVE_BY_DELETE);
-        GetMotionMaster()->Clear(false,true);         // remove all movement generators.
     }
     WorldObject::CleanupsBeforeDelete();
 }
@@ -10534,6 +10530,9 @@ void Unit::DoPetAction( Player* owner, uint8 flag, uint32 spellid, ObjectGuid pe
 
             if (!targetGuid.IsEmpty())
                 unit_target = owner->GetMap()->GetUnit(targetGuid);
+
+            if (IsNonMeleeSpellCasted(false))
+                InterruptNonMeleeSpells(false);
 
             DoPetCastSpell(unit_target, spellid);
 
@@ -12132,7 +12131,7 @@ public:
             MaNGOS::PlayerRelocationNotifier notify((Player&)m_owner);
             Cell::VisitAllObjects(&m_owner,notify,radius);
         }
-        else //if (m_owner.GetTypeId() == TYPEID_UNIT)
+        else //if(m_owner.GetTypeId() == TYPEID_UNIT)
         {
             MaNGOS::CreatureRelocationNotifier notify((Creature&)m_owner);
             Cell::VisitAllObjects(&m_owner,notify,radius);
@@ -12347,17 +12346,63 @@ bool Unit::HasMorePoweredBuff(uint32 spellId)
     for (uint8 i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
         if ( spellInfo->Effect[i] != SPELL_EFFECT_APPLY_AURA  &&
-            spellInfo->Effect[i] != SPELL_EFFECT_PERSISTENT_AREA_AURA )
+             spellInfo->Effect[i] != SPELL_EFFECT_APPLY_AREA_AURA_PARTY &&
+             spellInfo->Effect[i] != SPELL_EFFECT_APPLY_AREA_AURA_RAID
+            )
             continue;
 
-        Unit::AuraList const& auras = GetAurasByType(AuraType(spellInfo->EffectApplyAuraName[SpellEffectIndex(i)]));
+        AuraList auras = GetAurasByType(AuraType(spellInfo->EffectApplyAuraName[SpellEffectIndex(i)]));
         if (auras.empty())
             continue;
 
-        for (Unit::AuraList::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
-            if ((*itr) && (*itr)->GetHolder() && !(*itr)->GetHolder()->IsDeleted() && (*itr)->GetSpellProto()->AttributesEx7 & SPELL_ATTR_EX7_REPLACEABLE_AURA)
-                if (spellInfo->CalculateSimpleValue(SpellEffectIndex(i)) < (*itr)->GetModifier()->m_amount)
+        for (AuraList::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
+        {
+            Aura* aura = *itr;
+            if (!aura)
+                continue;
+
+            SpellAuraHolder* holder = aura->GetHolder();
+
+            if (!holder || holder->IsDeleted())
+                continue;
+
+            SpellEntry const* foundSpellInfo = holder->GetSpellProto();
+
+            ObjectGuid foundCaster = holder->GetCasterGuid();
+
+            if (!foundSpellInfo || !foundCaster.IsPlayerOrPet())
+                continue;
+
+            if (foundSpellInfo == spellInfo)
+                continue;
+
+            if (!(foundSpellInfo->AttributesEx7 & SPELL_ATTR_EX7_REPLACEABLE_AURA))
+                continue;
+
+// not may detect, need check for SchoolMask, or not?
+//            if (GetSpellSchoolMask(foundSpellInfo) != GetSpellSchoolMask(spellInfo))
+//                continue;
+
+            for (uint8 j = 0; j < MAX_EFFECT_INDEX; ++j)
+            {
+                if (foundSpellInfo->Effect[j] != spellInfo->Effect[i])
+                    continue;
+
+                if (foundSpellInfo->EffectApplyAuraName[j] != spellInfo->EffectApplyAuraName[i])
+                    continue;
+
+                if (foundSpellInfo->EffectMiscValue[j] != spellInfo->EffectMiscValue[i])
+                    continue;
+
+                if (spellInfo->CalculateSimpleValue(SpellEffectIndex(i)) < foundSpellInfo->CalculateSimpleValue(SpellEffectIndex(j)))
                     return true;
+                else
+                    return false;
+            }
+
+            if (itr == auras.end())
+                break;
+        }
     }
 
     return false;
