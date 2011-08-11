@@ -1165,9 +1165,6 @@ void Aura::HandleAddModifier(bool apply, bool Real)
             case 64823:                                     // Elune's Wrath (Balance druid t8 set
                 GetHolder()->SetAuraCharges(1);
                 break;
-            case 53257:                                     // Cobra strike 2 stack on apply (maximal value! not +2)
-                GetHolder()->SetStackAmount(2);
-                break;
             default:
                 break;
         }
@@ -4270,6 +4267,23 @@ void Aura::HandleForceReaction(bool apply, bool Real)
     // stop fighting if at apply forced rank friendly or at remove real rank friendly
     if ((apply && faction_rank >= REP_FRIENDLY) || (!apply && player->GetReputationRank(faction_id) >= REP_FRIENDLY))
         player->StopAttackFaction(faction_id);
+
+    // drop BG flag if player is carrying
+    if (SpellEntry const *spellInfo = GetSpellProto())
+    {
+        switch(spellInfo->Id)
+        {
+            case 1953:                          // Blink
+            case 48020:                         // Demonic Circle
+            case 54861:                         // Nitro Boosts
+                if (player->InBattleGround() && (player->HasAura(23335) || player->HasAura(23333) || player->HasAura(34976)))
+                    if (BattleGround *bg = player->GetBattleGround())
+                        bg->EventPlayerDroppedFlag(player);
+                break;
+            default:
+                break; 
+        }
+    }
 }
 
 void Aura::HandleAuraModSkill(bool apply, bool /*Real*/)
@@ -9811,6 +9825,7 @@ m_permanent(false), m_isRemovedOnShapeLost(true), m_deleted(false), m_in_use(0)
         case 24662:                                         // Restless Strength
         case 26464:                                         // Mercurial Shield
         case 34027:                                         // Kill Command
+        case 53257:                                         // Cobra strike
         case 55166:                                         // Tidal Force
         case 58914:                                         // Kill Command (pet part)
         case 62519:                                         // Attuned to Nature
