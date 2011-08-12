@@ -1865,7 +1865,6 @@ Anticheat.Warden  = 0
 #                 0  - Don't delete any characters, they stay in the database forever.
 #
 ###################################################################################################################
-
 CharDelete.Method = 1
 CharDelete.MinLevel = 10
 CharDelete.KeepDays = 30
@@ -1884,7 +1883,6 @@ RAF.MaxReferals         = 5
 RAF.MaxReferers         = 5
 Rate.RAF.XP             = 3
 Rate.RAF.LevelPerLevel  = 0.5
-
 
 ###################################################################################################################
 #    LFG Dungeon finder system
@@ -1909,6 +1907,64 @@ LFG.Debug               = 0
 LFR.Extend              = 0
 LFG.MaxKicks            = 5
 LFG.OnlyLastEncounterForCompleteDungeon = 0
+
+###################################################################################################################
+#    PvP Token System
+#
+#    PvPToken.Enable
+#        Enable/disable PvP Token system.
+#        Default: 1 (enabled)
+#        0 (disabled)
+#
+#    PvPToken.ItemID
+#        The item ID of the token that players will receive after killing an enemy.
+#        Default: 29434 (Badge of Justice)
+#
+#    PvPToken.ItemCount
+#        The count amount of the ItemID
+#        Default: 1
+#
+#    PvPToken.Gold
+#        The amount of gold that players will receive after killing an enemy.
+#        Default: 100000
+#    PvPToken.Honor  
+#        The amount of honor points that players will receive after killing an enemy.  
+#        Default: 75000  
+#  
+#    PvPToken.Arena  
+#        The amount of arena points that players will receive after killing an enemy.  
+#        Default: 5000 
+#
+#
+#    PvPToken.MapRestriction
+#        The type of maps where players can receive the token
+#        Default: 4 - all maps
+#                 3 - battlegrounds only
+#                 2 - FFA areas only (both instanced and world arenas)
+#                 1 - battlegrounds and FFA areas only
+#
+###################################################################################################################
+PvPToken.Enable = 0
+PvPToken.ItemID = 29434
+PvPToken.ItemCount = 1
+PvPToken.Gold = 0
+PvPToken.Honor = 0  
+PvPToken.Arena = 0
+PvPToken.MapRestriction = 4
+
+###################################################################################################################
+#    PvP Announcer System
+#
+#    PvPAnnouncer.Enable
+#       Enable/disable PvP Announcer system.
+#       Default: 1 - enabled
+#                0 - disabled
+###################################################################################################################
+PvPAnnouncer.Enable = 0
+PvPAnnouncer.ColorKiller = |CFFFFFF01
+PvPAnnouncer.ColorKilled = |CFFFFFF01
+PvPAnnouncer.ColorArea = |CFFFE8A0E
+
 
 ###################################################################################################################
 # PLAYERBOTAI CONFIGURATION
