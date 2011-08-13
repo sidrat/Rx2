@@ -62,10 +62,13 @@ enum BrutallusSpells
 
 enum MadrigosaSpells
 {
-    SPELL_FROST_BLAST               = 45203,
-    SPELL_ENCAPSULATE               = 44883,
+    SPELL_FROST_BLAST               = 44843,
+    SPELL_ENCAPSULATE               = 44883,    // gotta be the wrong encapsulate for intro
+    SPELL_FROST_DOOR              = 45203,   Starting to think madrigosa casthis at game object ice barrier doodad to make the ice barrier door at intro
     //SPELL_BREAK_ICE               = 46650,  // Graphic of spell when Ice Barrier Breaks
     //SPELL_OPEN_DOOR               = 46652, // outro
+    //SPELL_INTRO_ENCAPSULATE            =   45665,   used in intro
+    //SPELL_INTRO_ENCAPSULATE_CHANELLING =   45661    used in intro
     SPELL_FELMYST_SUMMON            = 45069, //  Madrigosa uses this spell to summon invis base of felmyst --- Invis base needs to hide(spawn in center of madri corpse) he shouldnt be a static spawn
 };
 
@@ -146,7 +149,7 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
             m_pInstance->SetData(TYPE_BRUTALLUS, DONE);
 
 // should spawn felmyst Invis base inside madrigosa corpse
-// Upon Brutallus Death his bloods runs over to madrigosa corpse and felmyst is borneds
+// Upon Brutallus Death his bloods runs over to madrigosa corpse and felmyst is born
         if (Creature* pMadrigosa = m_pInstance->GetSingleCreatureFromStorage(NPC_MADRIGOSA))
             pMadrigosa->CastSpell(pMadrigosa->GetPositionX(),pMadrigosa->GetPositionY(),pMadrigosa->GetPositionZ(),SPELL_FELMYST_SUMMON, true);
     }
@@ -192,7 +195,7 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
                     if (Creature* pMadrigosa = m_pInstance->instance->GetCreature(m_uiMadrigosaGuid))
                     {
                         DoScriptText(YELL_MADR_ICE_BLOCK, pMadrigosa);
-                        pMadrigosa->CastSpell(m_creature, SPELL_FROST_BLAST, true);
+                        pMadrigosa->CastSpell(m_creature, SPELL_FROST_DOOR, true);
                     }
                     m_uiIntroTimer = 2000;
                     break;
@@ -209,11 +212,11 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
                             m_creature->GetMotionMaster()->MoveChase(pMadrigosa);
                             pMadrigosa->CastSpell(m_creature, SPELL_FROST_BLAST, true);
                     }
-                    m_uiIntroTimer = 2000;
+                    m_uiIntroTimer = 4000;
                     break;
                 case 6:
                     if (Creature* pMadrigosa = m_pInstance->instance->GetCreature(m_uiMadrigosaGuid))
-                       pMadrigosa->CastSpell(m_creature, SPELL_FROST_BLAST, true);
+                       pMadrigosa->CastSpell(m_creature, SPELL_FROST_DOOR, true);
                        m_uiIntroTimer = 2000;
                     break;
                 case 7:
