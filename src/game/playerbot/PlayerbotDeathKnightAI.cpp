@@ -127,6 +127,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
 
             if (ARMY_OF_THE_DEAD > 0 && ai->GetAttackerCount() >= 5 && LastSpellUnholyDK < 1)
             {
+                //ai->TellMaster("I'm casting ARMY_OF_THE_DEAD.");
                 ai->CastSpell(ARMY_OF_THE_DEAD);
                 out << " summoning Army of the Dead!";
                 if (ARMY_OF_THE_DEAD > 0 && m_bot->HasAura(ARMY_OF_THE_DEAD, EFFECT_INDEX_0))
@@ -137,6 +138,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (PLAGUE_STRIKE > 0 && !pTarget->HasAura(PLAGUE_STRIKE, EFFECT_INDEX_0) && LastSpellUnholyDK < 2)
             {
+                //ai->TellMaster("I'm casting PLAGUE_STRIKE.");
                 ai->CastSpell(PLAGUE_STRIKE, *pTarget);
                 out << " Plague Strike";
                 SpellSequence = SPELL_DK_FROST;
@@ -145,6 +147,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (DEATH_GRIP > 0 && !pTarget->HasAura(DEATH_GRIP, EFFECT_INDEX_0) && LastSpellUnholyDK < 3)
             {
+                //ai->TellMaster("I'm casting DEATH GRIP.");
                 ai->CastSpell(DEATH_GRIP, *pTarget);
                 out << " Death Grip";
                 SpellSequence = SPELL_DK_FROST;
@@ -153,6 +156,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (DEATH_COIL > 0 && LastSpellUnholyDK < 4 && ai->GetRunicPower() >= 40)
             {
+                //ai->TellMaster("I'm casting DEATH COIL.");
                 ai->CastSpell(DEATH_COIL, *pTarget);
                 out << " Death Coil";
                 SpellSequence = SPELL_DK_FROST;
@@ -161,6 +165,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (DEATH_STRIKE > 0 && !pTarget->HasAura(DEATH_STRIKE, EFFECT_INDEX_0) && LastSpellUnholyDK < 5)
             {
+                //ai->TellMaster("I'm casting DEATH STRIKE.");
                 ai->CastSpell(DEATH_STRIKE, *pTarget);
                 out << " Death Strike";
                 SpellSequence = SPELL_DK_FROST;
@@ -169,6 +174,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (UNHOLY_BLIGHT > 0 && !pTarget->HasAura(UNHOLY_BLIGHT, EFFECT_INDEX_0) && LastSpellUnholyDK < 6)
             {
+                //ai->TellMaster("I'm casting UNHOLY BLIGHT.");
                 ai->CastSpell(UNHOLY_BLIGHT);
                 out << " Unholy Blight";
                 SpellSequence = SPELL_DK_FROST;
@@ -177,6 +183,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (SCOURGE_STRIKE > 0 && LastSpellUnholyDK < 7)
             {
+                //ai->TellMaster("I'm casting SCOURGE_STRIKE.");
                 ai->CastSpell(SCOURGE_STRIKE, *pTarget);
                 out << " Scourge Strike";
                 SpellSequence = SPELL_DK_FROST;
@@ -185,6 +192,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (DEATH_AND_DECAY > 0 && ai->GetAttackerCount() >= 3 && dist <= ATTACK_DISTANCE && !pTarget->HasAura(DEATH_AND_DECAY, EFFECT_INDEX_0) && LastSpellUnholyDK < 8)
             {
+                //ai->TellMaster("I'm casting DEATH_AND_DECAY.");
                 ai->CastSpell(DEATH_AND_DECAY);
                 out << " Death and Decay";
                 ai->SetIgnoreUpdateTime(1);
@@ -194,6 +202,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (SUMMON_GARGOYLE > 0 && !m_bot->HasAura(ARMY_OF_THE_DEAD, EFFECT_INDEX_0) && !pTarget->HasAura(SUMMON_GARGOYLE, EFFECT_INDEX_0) && LastSpellUnholyDK < 9 && ai->GetRunicPower() >= 60)
             {
+                //ai->TellMaster("I'm casting SUMMONING GARGOYLE.");
                 ai->CastSpell(SUMMON_GARGOYLE, *pTarget);
                 out << " summoning Gargoyle";
                 ai->SetIgnoreUpdateTime(2);
@@ -203,6 +212,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (CORPSE_EXPLOSION > 0 && dist <= ATTACK_DISTANCE && LastSpellUnholyDK < 10)
             {
+                //ai->TellMaster("I'm casting CORPSE_EXPLOSION.");
                 ai->CastSpell(CORPSE_EXPLOSION, *pTarget);
                 out << " Corpse Explosion";
                 SpellSequence = SPELL_DK_FROST;
@@ -211,6 +221,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (ANTI_MAGIC_SHELL > 0 && pTarget->IsNonMeleeSpellCasted(true) && !m_bot->HasAura(ANTI_MAGIC_SHELL, EFFECT_INDEX_0) && LastSpellUnholyDK < 11 && ai->GetRunicPower() >= 20)
             {
+                //ai->TellMaster("I'm casting ANTIMAGIC SHELL.");
                 ai->CastSpell(ANTI_MAGIC_SHELL, *m_bot);
                 out << " Anti-Magic Shell";
                 SpellSequence = SPELL_DK_FROST;
@@ -219,6 +230,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (ANTI_MAGIC_ZONE > 0 && pTarget->IsNonMeleeSpellCasted(true) && !m_bot->HasAura(ANTI_MAGIC_SHELL, EFFECT_INDEX_0) && LastSpellUnholyDK < 12)
             {
+                //ai->TellMaster("I'm casting ANTI MAGIC ZONE.");
                 ai->CastSpell(ANTI_MAGIC_ZONE, *m_bot);
                 out << " Anti-Magic Zone";
                 SpellSequence = SPELL_DK_FROST;
@@ -228,6 +240,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             else if ((!pet)
                      && (RAISE_DEAD > 0 && !m_bot->HasAura(ARMY_OF_THE_DEAD, EFFECT_INDEX_0) && LastSpellUnholyDK < 13))
             {
+                //ai->TellMaster("I'm casting SUMMONING GHOUL.");
                 ai->CastSpell(RAISE_DEAD);
                 out << " summoning Ghoul";
                 SpellSequence = SPELL_DK_FROST;
@@ -237,6 +250,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             else if ((pet)
                      && (GHOUL_FRENZY > 0 && pVictim == pet && !pet->HasAura(GHOUL_FRENZY, EFFECT_INDEX_0) && LastSpellUnholyDK < 14))
             {
+                //ai->TellMaster("I'm casting GHOUL FRENZY ON PET.");
                 ai->CastSpell(GHOUL_FRENZY, *pet);
                 out << " casting Ghoul Frenzy on pet";
                 SpellSequence = SPELL_DK_FROST;
@@ -263,6 +277,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
 
             if (ICY_TOUCH > 0 && !pTarget->HasAura(ICY_TOUCH, EFFECT_INDEX_0) && LastSpellFrostDK < 1)
             {
+                //ai->TellMaster("I'm casting ICY_TOUCH.");
                 ai->CastSpell(ICY_TOUCH, *pTarget);
                 out << " Icy Touch";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -271,6 +286,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (OBLITERATE > 0 && LastSpellFrostDK < 2)
             {
+                //ai->TellMaster("I'm casting OBLITERATE.");
                 ai->CastSpell(OBLITERATE, *pTarget);
                 out << " Obliterate";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -279,6 +295,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (FROST_STRIKE > 0 && LastSpellFrostDK < 3 && ai->GetRunicPower() >= 40)
             {
+                //ai->TellMaster("I'm casting FROST STRIKE.");
                 ai->CastSpell(FROST_STRIKE, *pTarget);
                 out << " Frost Strike";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -287,6 +304,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (HOWLING_BLAST > 0 && ai->GetAttackerCount() >= 3 && LastSpellFrostDK < 4)
             {
+                //ai->TellMaster("I'm casting HOWLING BLAST.");
                 ai->CastSpell(HOWLING_BLAST, *pTarget);
                 out << " Howling Blast";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -295,6 +313,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (CHAINS_OF_ICE > 0 && !pTarget->HasAura(CHAINS_OF_ICE, EFFECT_INDEX_0) && LastSpellFrostDK < 5)
             {
+                //ai->TellMaster("I'm casting CHAINS OF ICE.");
                 ai->CastSpell(CHAINS_OF_ICE, *pTarget);
                 out << " Chains of Ice";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -303,6 +322,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (RUNE_STRIKE > 0 && LastSpellFrostDK < 6 && ai->GetRunicPower() >= 20)
             {
+                //ai->TellMaster("I'm casting RUNE STRIKE.");
                 ai->CastSpell(RUNE_STRIKE, *pTarget);
                 out << " Rune Strike";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -311,6 +331,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (ICY_CLUTCH > 0 && !pTarget->HasAura(ICY_CLUTCH, EFFECT_INDEX_0) && LastSpellFrostDK < 7)
             {
+                //ai->TellMaster("I'm casting ICY CLUTCH.");
                 ai->CastSpell(ICY_CLUTCH, *pTarget);
                 out << " Icy Clutch";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -319,6 +340,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (ICEBOUND_FORTITUDE > 0 && ai->GetHealthPercent() < 50 && pVictim == m_bot && !m_bot->HasAura(ICEBOUND_FORTITUDE, EFFECT_INDEX_0) && LastSpellFrostDK < 8 && ai->GetRunicPower() >= 20)
             {
+                //ai->TellMaster("I'm casting ICE BOUND FORTITUDE.");
                 ai->CastSpell(ICEBOUND_FORTITUDE, *m_bot);
                 out << " Icebound Fortitude";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -327,6 +349,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (MIND_FREEZE > 0 && pTarget->IsNonMeleeSpellCasted(true) && dist <= ATTACK_DISTANCE && LastSpellFrostDK < 9 && ai->GetRunicPower() >= 20)
             {
+                //ai->TellMaster("I'm casting MIND FREEZE.");
                 ai->CastSpell(MIND_FREEZE, *pTarget);
                 out << " Mind Freeze";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -335,6 +358,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (HUNGERING_COLD > 0 && ai->GetAttackerCount() >= 3 && dist <= ATTACK_DISTANCE && LastSpellFrostDK < 10 && ai->GetRunicPower() >= 40)
             {
+                //ai->TellMaster("I'm casting HUNGERING COLD.");
                 ai->CastSpell(HUNGERING_COLD, *pTarget);
                 out << " Hungering Cold";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -343,6 +367,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (EMPOWER_WEAPON > 0 && ai->GetRunicPower() < 20 && LastSpellFrostDK < 11)
             {
+                //ai->TellMaster("I'm casting EMPOWERED RUNE.");
                 ai->CastSpell(EMPOWER_WEAPON, *m_bot);
                 out << " Empower Rune Weapon";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -351,6 +376,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (UNBREAKABLE_ARMOR > 0 && !m_bot->HasAura(UNBREAKABLE_ARMOR, EFFECT_INDEX_0) && ai->GetHealthPercent() < 70 && pVictim == m_bot && LastSpellFrostDK < 12)
             {
+                //ai->TellMaster("I'm casting UNBREAKABLE_ARMOR.");
                 ai->CastSpell(UNBREAKABLE_ARMOR, *m_bot);
                 out << " Unbreakable Armor";
                 SpellSequence = SPELL_DK_BLOOD;
@@ -372,6 +398,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
 
             if (MARK_OF_BLOOD > 0 && !pTarget->HasAura(MARK_OF_BLOOD, EFFECT_INDEX_0) && LastSpellBloodDK < 1)
             {
+                //ai->TellMaster("I'm casting MARK OF BLOOD.");
                 ai->CastSpell(MARK_OF_BLOOD, *pTarget);
                 out << " Mark of Blood";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -380,6 +407,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (BLOOD_STRIKE > 0 && LastSpellBloodDK < 2)
             {
+                //ai->TellMaster("I'm casting BLOOD STRIKE.");
                 ai->CastSpell(BLOOD_STRIKE, *pTarget);
                 out << " Blood Strike";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -388,6 +416,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (PESTILENCE > 0 && dist <= ATTACK_DISTANCE && ai->GetAttackerCount() >= 3 && LastSpellBloodDK < 3)
             {
+                //ai->TellMaster("I'm casting PESTILENCE.");
                 ai->CastSpell(PESTILENCE, *pTarget);
                 out << " Pestilence";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -396,6 +425,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (STRANGULATE > 0 && !pTarget->HasAura(STRANGULATE, EFFECT_INDEX_0) && LastSpellBloodDK < 4)
             {
+                //ai->TellMaster("I'm casting STRANGUALTE.");
                 ai->CastSpell(STRANGULATE, *pTarget);
                 out << " Strangulate";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -404,6 +434,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (BLOOD_BOIL > 0 && ai->GetAttackerCount() >= 5 && dist <= ATTACK_DISTANCE && LastSpellBloodDK < 5)
             {
+                //ai->TellMaster("I'm casting BLOOD BOIL.");
                 ai->CastSpell(BLOOD_BOIL, *pTarget);
                 out << " Blood Boil";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -412,6 +443,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (HEART_STRIKE > 0 && LastSpellBloodDK < 6)
             {
+                //ai->TellMaster("I'm casting HEART_STRIKE.");
                 ai->CastSpell(HEART_STRIKE, *pTarget);
                 out << " Heart Strike";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -420,6 +452,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (VAMPIRIC_BLOOD > 0 && ai->GetHealthPercent() < 70 && !m_bot->HasAura(VAMPIRIC_BLOOD, EFFECT_INDEX_0) && LastSpellBloodDK < 7)
             {
+                //ai->TellMaster("I'm casting VAMPIRIC BLOOD.");
                 ai->CastSpell(VAMPIRIC_BLOOD, *m_bot);
                 out << " Vampiric Blood";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -428,6 +461,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (RUNE_TAP > 0 && ai->GetHealthPercent() < 70 && !m_bot->HasAura(VAMPIRIC_BLOOD, EFFECT_INDEX_0) && LastSpellBloodDK < 8)
             {
+                //ai->TellMaster("I'm casting RUNE TAP.");
                 ai->CastSpell(RUNE_TAP, *m_bot);
                 out << " Rune Tap";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -436,6 +470,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (HYSTERIA > 0 && ai->GetHealthPercent() > 25 && !m_bot->HasAura(HYSTERIA, EFFECT_INDEX_0) && LastSpellBloodDK < 9)
             {
+                //ai->TellMaster("I'm casting HYDTERIA.");
                 ai->CastSpell(HYSTERIA, *m_bot);
                 out << " Hysteria";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -444,6 +479,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (DANCING_WEAPON > 0 && !m_bot->HasAura(DANCING_WEAPON, EFFECT_INDEX_0) && ai->GetRunicPower() >= 60 && LastSpellBloodDK < 10)
             {
+                //ai->TellMaster("I'm casting DANCING RUNE BLADE.");
                 ai->CastSpell(DANCING_WEAPON, *pTarget);
                 out << " summoning Dancing Rune Weapon";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -452,6 +488,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             }
             else if (DARK_COMMAND > 0 && ai->GetHealthPercent() > 50 && pVictim != m_bot && !pTarget->HasAura(DARK_COMMAND, EFFECT_INDEX_0) && dist <= ATTACK_DISTANCE && LastSpellBloodDK < 11)
             {
+                //ai->TellMaster("I'm casting DARK COMMAND.");
                 ai->CastSpell(DARK_COMMAND, *pTarget);
                 out << " Dark Command";
                 SpellSequence = SPELL_DK_UNHOLY;
@@ -461,6 +498,7 @@ void PlayerbotDeathKnightAI::DoNextCombatManeuver(Unit *pTarget)
             else if ((pet)
                      && (DEATH_PACT > 0 && ai->GetHealthPercent() < 50 && LastSpellBloodDK < 12 && ai->GetRunicPower() >= 40))
             {
+                //ai->TellMaster("I'm casting PET DEATH FOR DEATH PACT.");
                 ai->CastSpell(DEATH_PACT, *pet);
                 out << " Death Pact (sacrifice pet)";
                 SpellSequence = SPELL_DK_UNHOLY;

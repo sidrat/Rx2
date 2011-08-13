@@ -193,6 +193,7 @@ void PlayerbotPriestAI::DoNextCombatManeuver(Unit *pTarget)
        case SPELL_HOLY:
            if (SMITE > 0 && LastSpellHoly < 1 && !pTarget->HasAura(SMITE, EFFECT_INDEX_0) && ai->GetManaPercent() >= 17)
             {
+                //ai->TellMaster("I'm casting SMITE.");
                 ai->CastSpell(SMITE, *pTarget);
                 LastSpellHoly = LastSpellHoly + 1;
             }
