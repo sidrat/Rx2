@@ -644,7 +644,7 @@ std::string IRCCmd::AcctIsBanned(std::string ACCT)
         delete result;
         return "IP Banned. Reason:" + banned;
     }
-    QueryResult *result2 = LoginDatabase.PQuery("SELECT banreason FROM account_banned WHERE id='%i'", acctid);
+    QueryResult *result2 = LoginDatabase.PQuery("SELECT banreason FROM account_banned WHERE active='1' and id='%i'", acctid);
     if(result2)
     {
         banned = (*result2)[0].GetCppString();
